@@ -18,13 +18,10 @@ enum Route {
 
 #[function_component(Secure)]
 fn secure() -> Html {
-    let history = use_history().unwrap();
-
-    let onclick = Callback::once(move |_| history.push(Route::Home));
     html! {
         <div>
             <h1>{ "Secure" }</h1>
-            <button {onclick}>{ "Go Home" }</button>
+            <button onclick={change_route(Route::Home)}>{ "Go Home" }</button>
         </div>
     }
 }
@@ -47,18 +44,16 @@ fn home() -> Html {
 
 #[function_component(Movies)]
 fn movies() -> Html {
-    let history = use_history().unwrap();
-
-    let onclick = Callback::once(move |_| history.push(Route::Home));
     let movies = use_context::<Vec<MovieContext>>().expect("no ctx found");
     if movies.len() == 0 {
         return html! {<div></div>};
     }
+
     html! {
         <div>
             <h1>{ "Movies" }</h1>
             {movies.iter().map(|el| html! {<div>{el.title.clone()}</div>}).collect::<Html>()}
-            <button {onclick}>{ "Go Home" }</button>
+            <button onclick={change_route(Route::Home)}>{ "Go Home" }</button>
         </div>
     }
 }
