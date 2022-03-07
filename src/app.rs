@@ -1,15 +1,9 @@
-use std::sync::{Arc, Mutex};
-
-use reqwasm::http::Request;
-use serde::Deserialize;
 use yew::prelude::*;
 
-#[derive(Clone, PartialEq, Deserialize)]
-struct Video {
-    id: usize,
-    title: String,
-    speaker: String,
-    url: String,
+#[derive(Clone, Debug, PartialEq)]
+struct Theme {
+    foreground: String,
+    background: String,
 }
 
 #[function_component(App)]
@@ -19,11 +13,38 @@ pub fn app() -> Html {
         let counter = counter.clone();
         Callback::from(move |_| counter.set(*counter + 1))
     };
+    let ctx = use_state(|| Theme {
+        foreground: "#000000".to_owned(),
+        background: "#eeeeee".to_owned(),
+    });
 
     html! {
-        <main>
-            <p>{*counter}</p>
-            <button {onclick}>{"Click Me!"}</button>
-        </main>
+        <ContextProvider<UseStateHandle<Theme>> context={ctx.clone()}>
+            <main>
+                <p style={format!("color: {}", (*ctx).foreground)}>{*counter}</p>
+                <button {onclick}>{"Click Me!"}</button>
+                <ChangeColor />
+            </main>
+        </ContextProvider<UseStateHandle<Theme>>>
+    }
+}
+
+#[function_component(ChangeColor)]
+pub fn change_color() -> Html {
+    let theme = use_context::<UseStateHandle<Theme>>().expect("Not Ctx found");
+    let onclick = {
+        let theme = theme.clone();
+        Callback::from(move |_| {
+            theme.set(Theme {
+                foreground: "#3dff3d".to_owned(),
+                background: theme.background.clone(),
+            });
+        })
+    };
+
+    html! {
+        <div>
+            <button {onclick}>{format!("Current Color {}", (*theme).foreground)}</button>
+        </div>
     }
 }
