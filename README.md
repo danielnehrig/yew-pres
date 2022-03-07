@@ -64,6 +64,12 @@ The [index.html](index.html) file also contains a `<title>` tag that needs updat
 
 Finally, you should update this very `README` file to be about your app.
 
+### Proxying
+
+```bash
+trunk serve --proxy-backend=https://yew.rs/tutorial
+```
+
 ### License
 
 The template ships with both the Apache and MIT license.
