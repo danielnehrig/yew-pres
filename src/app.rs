@@ -1,29 +1,45 @@
-use std::sync::{Arc, Mutex};
-
-use reqwasm::http::Request;
-use serde::Deserialize;
 use yew::prelude::*;
+use yew_router::prelude::*;
 
-#[derive(Clone, PartialEq, Deserialize)]
-struct Video {
-    id: usize,
-    title: String,
-    speaker: String,
-    url: String,
+#[derive(Clone, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
+    #[at("/secure")]
+    Secure,
+    #[not_found]
+    #[at("/404")]
+    NotFound,
+}
+
+#[function_component(Secure)]
+fn secure() -> Html {
+    let history = use_history().unwrap();
+
+    let onclick = Callback::once(move |_| history.push(Route::Home));
+    html! {
+        <div>
+            <h1>{ "Secure" }</h1>
+            <button {onclick}>{ "Go Home" }</button>
+        </div>
+    }
+}
+
+fn switch(routes: &Route) -> Html {
+    match routes {
+        Route::Home => html! { <h1>{ "Home" }</h1> },
+        Route::Secure => html! {
+            <Secure />
+        },
+        Route::NotFound => html! { <h1>{ "404" }</h1> },
+    }
 }
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let counter = use_state(|| 0);
-    let onclick = {
-        let counter = counter.clone();
-        Callback::from(move |_| counter.set(*counter + 1))
-    };
-
     html! {
-        <main>
-            <p>{*counter}</p>
-            <button {onclick}>{"Click Me!"}</button>
-        </main>
+        <BrowserRouter>
+            <Switch<Route> render={Switch::render(switch)} />
+        </BrowserRouter>
     }
 }
