@@ -70,6 +70,12 @@ Finally, you should update this very `README` file to be about your app.
 trunk serve --proxy-backend=https://yew.rs/tutorial
 ```
 
+### Generate
+
+```bash
+cargo generate --git https://github.com/yewstack/yew-trunk-minimal-template
+```
+
 ### License
 
 The template ships with both the Apache and MIT license.
